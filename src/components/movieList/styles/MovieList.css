@@ -1,0 +1,145 @@
+/* src/components/movieList/styles/MovieList.css */
+
+.movie-list-container {
+  padding: 20px;
+}
+
+.movie-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+  gap: 20px; /* Space between cards */
+  padding: 20px; /* Space around the grid */
+  box-sizing: border-box; /* Ensure padding is included in total width/height */
+}
+
+/* Heading styling */
+.year-heading-container {
+  grid-column: 1 / -1; /* Make the heading span across all columns */
+  margin: 20px 0; /* Margin for spacing */
+  display: flex;
+  justify-content: center; /* Center align heading */
+}
+
+.year-heading {
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+  text-align: center; /* Center text alignment */
+}
+
+/* Ensure movie-card does not change height based on text */
+.movie-card {
+  background-color: #fff; /* Background color of each card */
+  border-radius: 8px; /* Rounded corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for a subtle 3D effect */
+  overflow: hidden; /* Hide overflow */
+  display: flex;
+  flex-direction: column;
+  height: 400px; /* Fixed height for cards */
+  transition: transform 0.3s, box-shadow 0.3s; /* Smooth transition for hover effects */
+}
+
+.movie-card:hover {
+  transform: scale(1.02); /* Slight zoom effect on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.movie-card img {
+  width: 100%; /* Full width of the card */
+  height: 220px; /* Fixed height for images */
+  object-fit: cover; /* Cover the area without distortion */
+}
+
+.movie-details {
+  padding: 15px; /* Padding around the movie details */
+  flex: 1; /* Allow details section to grow and take remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Distribute space between title, description, and tags */
+}
+
+.movie-details h3 {
+  font-size: 18px; /* Font size for movie title */
+  margin: 0 0 10px 0; /* Margin below the title */
+  font-weight: bold; /* Bold title for emphasis */
+  line-height: 1.2; /* Line height for better readability */
+}
+
+.movie-details p {
+  font-size: 14px; /* Font size for movie overview */
+  margin: 0 0 10px 0; /* Margin below the overview */
+  color: #555; /* Slightly darker color for text */
+  line-height: 1.4; /* Line height for better readability */
+  overflow: hidden; /* Hide overflow text */
+  text-overflow: ellipsis; /* Show ellipsis (...) for overflow text */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  height: 60px; /* Fixed height for description to fit within card */
+}
+
+.genres {
+  display: flex;
+  flex-wrap: wrap; /* Allow genres to wrap if necessary */
+  gap: 5px; /* Space between genre tags */
+}
+
+.genre {
+  background-color: #e0e0e0; /* Background color of genre tags */
+  border-radius: 4px; /* Rounded corners */
+  padding: 4px 8px; /* Padding around text */
+  font-size: 12px; /* Font size for genre tags */
+  color: #333; /* Darker text color for better contrast */
+}
+
+/* Responsive styles */
+@media (max-width: 1200px) {
+  .movie-list {
+    grid-template-columns: repeat(3, 1fr); /* 3 columns on medium screens */
+  }
+}
+
+@media (max-width: 900px) {
+  .movie-list {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on smaller screens */
+  }
+
+  .movie-card {
+    height: 350px; /* Adjust card height for smaller screens */
+  }
+
+  .movie-card img {
+    height: 200px; /* Adjust image height for smaller screens */
+  }
+
+  .movie-details h3 {
+    font-size: 16px; /* Smaller font size for titles */
+  }
+
+  .movie-details p {
+    font-size: 12px; /* Smaller font size for descriptions */
+    height: 50px; /* Adjust height for descriptions */
+  }
+}
+
+@media (max-width: 600px) {
+  .movie-list {
+    grid-template-columns: 1fr; /* 1 column on very small screens */
+  }
+
+  .movie-card {
+    height: auto; /* Allow card height to adjust based on content */
+  }
+
+  .movie-card img {
+    height: 180px; /* Adjust image height for very small screens */
+  }
+
+  .movie-details h3 {
+    font-size: 14px; /* Smaller font size for titles */
+  }
+
+  .movie-details p {
+    font-size: 10px; /* Smaller font size for descriptions */
+    height: auto; /* Allow description height to adjust based on content */
+    white-space: normal; /* Allow text to wrap on very small screens */
+  }
+}
