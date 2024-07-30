@@ -1,11 +1,17 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
+import { AutoSizer, List, InfiniteLoader } from 'react-virtualized';
 import useMovies from './hooks/useMovies';
 import useGenres from './hooks/useGenres';
 import useProcessedMovies from './hooks/useProcessedMovies';
 import MovieCard from './MovieCard';
+import GenreFilter from './GenreFilter';
+import SearchBar from './SearchBar';
 import './styles/MovieList.css';
 
 const MovieList = () => {
+  const [selectedGenres, setSelectedGenres] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
   const {
     movies,
     loading,
@@ -16,67 +22,94 @@ const MovieList = () => {
     setPage,
     setHasMoreMovies,
     fetchMovies
-  } = useMovies();
+  } = useMovies(selectedGenres, searchQuery);
 
   const genres = useGenres();
   const processedMovies = useProcessedMovies(movies);
-  const bottom = useRef(null);
 
-  // Fetch movies when year, page, or hasMoreMovies changes
   useEffect(() => {
-    const fetchAndSetMovies = async () => {
+    const fetchMoreRows = async () => {
       if (hasMoreMovies) {
         await fetchMovies(year, page);
       } else {
-        // Move to the next year if no more movies are available
         setYear(prevYear => prevYear + 1);
         setPage(1);
         setHasMoreMovies(true);
       }
     };
-    
-    fetchAndSetMovies();
-  }, [year, page, hasMoreMovies]);
-
-  // Set up the IntersectionObserver
-  useEffect(() => {
-    const observer = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting && !loading && hasMoreMovies) {
-        console.log("sinwsanj0");
-        setPage(prevPage => prevPage + 1);
-      }
-    }, {
-      root: null,
-      rootMargin: '50px',
-      threshold: 1.0
-    });
-
-    const bottomElement = bottom.current;
-    if (bottomElement) {
-      observer.observe(bottomElement);
+    if (selectedGenres.length === 0 && !searchQuery) {
+      fetchMoreRows();
     }
+  }, [year, page, hasMoreMovies, selectedGenres, searchQuery]);
 
-    return () => {
-      if (bottomElement) {
-        observer.unobserve(bottomElement);
-      }
+  useEffect(() => {
+    const fetchSelectedGenreMovies = async () => {
+      await fetchMovies(year, page);
     };
-  }, [loading, hasMoreMovies]);
+    fetchSelectedGenreMovies();
+  }, [selectedGenres]);
+
+  const isRowLoaded = ({ index }) => processedMovies[index];
+
+  const loadMoreRows = () => {
+    if (!loading && hasMoreMovies) {
+      setPage(prevPage => prevPage + 1);
+    }
+  };
+
+  const rowRenderer = ({ key, index, style }) => {
+    const item = processedMovies[index];
+    if (!item) return null;
+    return item.type === 'heading' ? (
+      <div key={key} className="year-heading-container" style={style}>
+        <h2 className="year-heading">Movies of {item.year}</h2>
+      </div>
+    ) : (
+      <div key={key} style={style}>
+        <MovieCard movie={item.movie} genres={genres} />
+      </div>
+    );
+  };
+
+  const debouncedSearch = (query) => {
+    setSearchQuery(query);
+  };
 
   return (
     <div className="movie-list-container">
-      <div className="movie-list">
-        {processedMovies.map(item =>
-          item.type === 'heading' ? (
-            <div key={item.key} className="year-heading-container">
-              <h2 className="year-heading">Movies of {item.year}</h2>
-            </div>
-          ) : (
-            <MovieCard key={item.key} movie={item.movie} genres={genres} />
-          )
+      <GenreFilter
+        genres={genres}
+        selectedGenres={selectedGenres}
+        onGenreSelect={(id) => {
+          setSelectedGenres(prevSelectedGenres =>
+            prevSelectedGenres.includes(id)
+              ? prevSelectedGenres.filter(genreId => genreId !== id)
+              : [...prevSelectedGenres, id]
+          );
+        }}
+      />
+      <SearchBar onSearch={debouncedSearch} />
+      <AutoSizer>
+        {({ height, width }) => (
+          <InfiniteLoader
+            isRowLoaded={isRowLoaded}
+            loadMoreRows={loadMoreRows}
+            rowCount={processedMovies.length + 1}
+          >
+            {({ onRowsRendered, registerChild }) => (
+              <List
+                height={height}
+                onRowsRendered={onRowsRendered}
+                ref={registerChild}
+                rowCount={processedMovies.length}
+                rowHeight={400}
+                rowRenderer={rowRenderer}
+                width={width}
+              />
+            )}
+          </InfiniteLoader>
         )}
-        <div ref={bottom} style={{ height: '1px' }}></div>
-      </div>
+      </AutoSizer>
     </div>
   );
 };

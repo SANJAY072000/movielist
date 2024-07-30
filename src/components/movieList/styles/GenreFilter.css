@@ -1,0 +1,28 @@
+.genre-filter-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: white;
+    padding: 10px 0;
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .genre-button {
+    border: none;
+    background: #f0f0f0;
+    padding: 10px 20px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .genre-button.selected {
+    background: #007bff;
+    color: white;
+  }
+  

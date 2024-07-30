@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import './styles/MovieList.css';
 
-const MAX_DESCRIPTION_LENGTH = 100; // Maximum length for the description before truncation
+const MAX_DESCRIPTION_LENGTH = 100;
 
 const truncateDescription = (description, maxLength) => {
   if (description.length > maxLength) {
@@ -10,12 +10,12 @@ const truncateDescription = (description, maxLength) => {
   return description;
 };
 
-const MovieCard = forwardRef(({ movie, genres }, ref) => {
+const MovieCard = forwardRef(({ movie, genres, style }, ref) => {
   const { title, poster_path, overview, genre_ids } = movie;
   const truncatedOverview = truncateDescription(overview, MAX_DESCRIPTION_LENGTH);
 
   return (
-    <div className="movie-card" ref={ref}>
+    <div className="movie-card" ref={ref} style={style}>
       <img src={`https://image.tmdb.org/t/p/w500${poster_path}`} alt={title} />
       <div className="movie-details">
         <h3>{title}</h3>

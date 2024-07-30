@@ -3,7 +3,7 @@ import MovieList from './components/movieList/MovieList';
 import './App.css';
 
 const App = () => {
-  const [year, setYear] = useState(2012);
+  const [year] = useState(2012);
   return (
     <div className="app">
       <h1>Movie List App</h1>
